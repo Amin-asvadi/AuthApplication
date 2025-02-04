@@ -1,5 +1,6 @@
 package com.example.data.di.network
 import com.example.base_android.uiles.Constant
+import com.example.base_android.uiles.Constant.BASE_URL
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -12,20 +13,17 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkRetrofitModule {
-    val timeOut = 30L
+    val timeOut =30L
 
     val contentType = "application/json".toMediaType()
-
-
-    @BaseUrl
-    @Provides
-    fun provideBaseUrl(): String = Constant.BASE_URL
-
+    // Content type for WebRTC with charset=utf-8
+    private val contentTypeWebRTC = "application/json; charset=utf-8".toMediaType()
 
     @Provides
     fun providesLoggingInterceptor(): HttpLoggingInterceptor {
@@ -37,11 +35,11 @@ object NetworkRetrofitModule {
     fun provideHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
         authInterceptor: AuthInterceptor,
-        appErrorHandlerInterceptor: AppErrorHandlerInterceptor,
+        hdcErrorHandlerInterceptor: AppErrorHandlerInterceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
-            .addInterceptor(appErrorHandlerInterceptor)
+            .addInterceptor(hdcErrorHandlerInterceptor)
             .connectTimeout(timeOut, TimeUnit.SECONDS)
             .readTimeout(timeOut, TimeUnit.SECONDS)
             .writeTimeout(timeOut, TimeUnit.SECONDS)
@@ -54,11 +52,10 @@ object NetworkRetrofitModule {
     @Provides
     fun provideRetrofitInstance(
         okHttpClient: OkHttpClient,
-        jsonConverterFactory: Json,
-        @BaseUrl baseUrl: String,
+        jsonConverterFactory: Json
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(jsonConverterFactory.asConverterFactory(contentType))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -70,7 +67,9 @@ object NetworkRetrofitModule {
     fun providerJsonSerialization(): Json {
         return Json {
             ignoreUnknownKeys = true
+            coerceInputValues =true
         }
     }
+
 
 }

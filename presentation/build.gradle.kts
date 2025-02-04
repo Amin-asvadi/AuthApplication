@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.dagger.hilt.android)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
 }
 
@@ -33,23 +34,37 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
     implementation(project(":base-android"))
+    implementation(project(":common-ui-resources"))
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
     libs.apply {
+        implementation(kotlinx.serialization.converter)
+        implementation(kotlinx.serialization.json)
+        implementation(android.data.store)
+        implementation(work.runtime)
+        implementation(work.manager)
+        implementation(navigation.compose)
         implementation(dagger.hilt.android)
         implementation(dagger.hilt.navigation)
         ksp(dagger.hilt.compiler)
-        implementation(navigation.compose)
-        implementation(libs.retrofit)
+        implementation(retrofit)
+        implementation(libs.androidx.room.common)
         implementation(adapter.rxjava2)
         implementation(logging.interceptor)
-        implementation(kotlinx.serialization.converter)
-        implementation(kotlinx.serialization.json)
-        implementation(libs.androidx.room.common)
     }
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

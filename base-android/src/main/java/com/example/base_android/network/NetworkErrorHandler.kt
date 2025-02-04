@@ -8,7 +8,6 @@ data class NetworkErrorData(
     val isWarning: Boolean = false,
     val message: String? = null,
     val isSignOut:Boolean = false,
-    val errorMode: Constant.ERROR_MODE = Constant.ERROR_MODE.SERVER_ERROR,
     val bottomSheetError:Boolean =false
 )
 

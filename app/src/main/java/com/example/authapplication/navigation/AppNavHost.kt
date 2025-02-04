@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.base_android.graph.AppGraphScreens
+import com.example.ui_auth_screen.AuthScreen
 
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -33,6 +34,7 @@ fun AppNavHost(
                       //  SplashScreen(navController = navController)
                     }*/
                 composable(AppGraphScreens.AuthScreen.route) {
+                    AuthScreen(navController=navController)
                 }
 
 
